@@ -30,16 +30,16 @@ for clipping in clippings:
         book_info = lines[0].strip().replace('\ufeff', '')
         book_info = '{% quot ' + book_info + ' %}  '
         content = lines[3].strip()
+        alld.setdefault(book_info, []).append(content)
 
-        if is_chinese(str(content)[4:7]):
+for k, v in alld.items():
+    open('res.txt', 'a', encoding='utf-8').write('\n' + str(k) + '\n')
+    filtered_list = list(filter(lambda x: not any(x in y for y in v if x != y), v))
+
+    for content in filtered_list:
+        if is_chinese(str(content)):
             color = random.choice(["orange", "yellow", "green", "cyan", "blue", "purple", "light", "warning"])
             content = '{% note color:' + f'{color} ' + content + ' %}'
         else:
             content = '> ' + content
-
-        alld.setdefault(book_info, []).append(content)
-
-for k, v in alld.items():
-    open('res.txt', 'a', encoding='utf-8').write(str(k) + '\n')
-    for one in v:
-        open('res.txt', 'a', encoding='utf-8').write('\n' + str(one) + '\n')
+        open('res.txt', 'a', encoding='utf-8').write('\n' + str(content) + '\n')
